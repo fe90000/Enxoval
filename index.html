@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Website</title>
+    <style>
+        body {
+            background-image: url('https://i.imgur.com/zDVt456.png'); /* Same folder */
+            background-size: cover;  /* Fills the entire screen */
+            background-repeat: no-repeat; /* Prevents repeating */
+        }
+        
+        /* Container for the clickable image */
+        .clickable-image {
+            position: absolute;
+            top: 81%;  /* Adjust position */
+            left: 48%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+        
+        .clickable-image img {
+            width: 400px;  /* Adjust size */
+            transition: 0.3s;  /* Smooth hover effect */
+        }
+        
+        .clickable-image img:hover {
+            opacity: 0.8;  /* Slight fade on hover */
+            transform: scale(1.05);  /* Slight zoom */
+        }
+    </style>
+</head>
+<body>
+    <!-- Clickable Image Link -->
+    <div class="clickable-image">
+        <a href="Bazaar Quant.html">  <!-- Replace with your link -->
+            <img src="https://i.imgur.com/wwo0ydE.png" alt="Clickable Image">  
+        </a>
+    </div>
+</body>
+</html>
+
