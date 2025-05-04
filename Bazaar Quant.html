@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
+  <title>Enxoval Odontológico</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      color: #3f16d5;
+    }
+
+    .produto {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+      border-bottom: 1px solid #ccc;
+      padding-bottom: 10px;
+    }
+
+    .produto img {
+      width: 150px;
+      height: 100px;
+      object-fit: contain;
+      margin-right: 20px;
+    }
+
+    .produto-info {
+      flex: 1;
+    }
+
+    .preco {
+      font-weight: bold;
+    }
+
+    .quantidade-container {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      margin-left: 20px;
+    }
+
+    .quantidade {
+      width: 70px;
+      padding: 6px;
+      font-size: 1em;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      text-align: center;
+    }
+
+    #total {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: #fff;
+      padding: 10px 20px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+      font-size: 1.2em;
+      z-index: 1000;
+    }
+
+    h1 {
+      text-align: center;
+      font-family: 'Great Vibes', cursive;
+      font-size: 3em; 
+      color: #8b73ff;
+    }
+
+    #pix-info {
+      position: fixed;
+      bottom: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #ffffff;
+      border: 1px solid #ccc;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+      z-index: 1001;
+      text-align: center;
+      max-width: 90%;
+      display: none;
+    }
+
+    #pagarBtn {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #8b73ff;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 1em;
+      cursor: pointer;
+      z-index: 1002;
+    }
+
+    #fecharBtn {
+      margin-top: 20px;
+      background-color: red;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 1em;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Enxoval Odontológico</h1>
+
+  <div id="lista-produtos"></div>
+
+  <div id="total">Total: R$ 0,00</div>
+
+  <div id="pix-info">
+    <h2>Pagamento via Pix</h2>
+    <p>Por favor, realize o pagamento para a chave abaixo:</p>
+    <p><strong>Chave Pix: 112.865.729-59</strong></p>
+    <p id="valorPix">Valor: R$ 0,00</p>
+    <p>Ou escaneie o QR Code abaixo:</p>
+    <img src="https://i.imgur.com/c86BYEv.png" alt="QR Code Pix" width="250px" height="auto">
+    <p>Após realizar o pagamento, clique abaixo para confirmar:</p>
+    <button id="fecharBtn">Fechar</button>
+  </div>
+
+  <button id="pagarBtn">Pagar via Pix</button>
+
+  <script>
+    const produtos = [
+{nome: 'Mosaico (1)', preco: 56.5, imagem: 'https://images.tcdn.com.br/img/img_prod/182105/bloco_mosaico_c_3_cores_mom_1709_1_26d359b0e1f8f956076f6fa4ea4593e0.jpg'},
+{nome: 'Toalha de rosto branca (1)', preco: 29, imagem: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRzyyub5JaycVJslTN5MG0Abd-ab6BsXpcwwg&s '},
+{nome: 'Campo para bancada em tecido na cor azul, 50 cm x 70 cm (1)', preco: 20, imagem: 'https://images.tcdn.com.br/img/img_prod/1159823/campo_cirurgico_esteril_azul_50x50cm_fenestrado_tnt_sms_40gr_m2_scartare_1687_1_fa22a52bcd6be22fb081d0164f7309bd.jpg'},
+{nome: 'Pinça para carbono tipo muller (1)', preco: 36.7, imagem: ' https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTceA3GwanT7-CjQpaOD62r54l_SFSI3e8KhA&s'},
+{nome: 'Caixa de lençol de borracha, espessura média e na cor azul (1)', preco: 28.84, imagem: 'https://cdn.dentalcremer.com.br/produtos/550/embalagem-lencol-borracha-13cm-madeitex-235913.jpg '},
+{nome: 'Pinça porta grampo tipo Palmer, angulada e COM A EXTREMIDADE NÃO SERRILHADA (1)', preco: 135.09, imagem: 'https://www.suryadental.com.br/media/catalog/product/2/5/250008000_2.jpg?auto=webp&format=pjpg&fit=cover '},
+{nome: 'Arco metálico porta dique de Young (1)', preco: 24.75, imagem: 'https://cdn.dentalcremer.com.br/produtos/210/arco-de-young-em-metal-golgran-dc-506976-01.jpg '},
+{nome: 'Alicate perfurador de borracha (1)', preco: 111.25, imagem: ' https://images.tcdn.com.br/img/img_prod/585327/alicate_perfurador_ainsworth_golgran_566_1_20231026173816.jpg'},
+{nome: 'Grampos (1)', preco: 197.31, imagem: 'https://dentalmarc.com.br/wp-content/uploads/2023/09/dental-01-20.webp'},
+{nome: 'Broca número 245, 329 e 330 (cone invertida de extremidade plana e arestas arredondadas) (1)', preco: 55.56, imagem: 'https://www.dentalfocus.com.br/imagens/informacoes/broca-diamantada-pm-02.webp '},
+{nome: 'Brocas esféricas  (brocas para alta rotação para uso em contra ângulo com manguito/adaptador) (2)', preco: 53.4, imagem: 'https://cdn.awsli.com.br/2500x2500/1677/1677841/produto/66876403/diamantada-1-utykzx.jpg '},
+{nome: 'Pontas diamantadas esféricas 1011, 1012, 1014 e 1016 (3)', preco: 103.2, imagem: ' https://www.suryadental.com.br/media/catalog/product/p/o/ponta_diamantada_migtools.jpg?auto=webp&format=pjpg&fit=cover'},
+{nome: 'Broqueiros (para pontas diamantadas e brocas para contra ângulo e alta rotação) (3)', preco: 20, imagem: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRq_u6yrrl-CrBB_dt_ZWzJ1blmr9LZM2ryKw&s '},
+{nome: 'Escavador de dentina duplo número 32 / 33 (1)', preco: 14.85, imagem: 'https://dentalecia.vteximg.com.br/arquivos/ids/175414-1000-1000/32-33Prata.png?v=638230455472630000 '},
+{nome: 'Escavador de dentina duplo número 5 (1)', preco: 14.85, imagem: ' https://dentalecia.vteximg.com.br/arquivos/ids/175001-1000-1000/Escavador5.png?v=638174266664000000'},
+{nome: 'Escavador de dentina duplo número 11 ½ (1)', preco: 14.85, imagem: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQk0unBQZ9x9Ni_BBp9QLZ1Qb-5HZKy_1g6GQ&s '},
+{nome: 'Escavador de dentina duplo número 18 (1)', preco: 14.85, imagem: ' https://cdn.awsli.com.br/800x800/2790/2790188/produto/346779650/20130_000_1-or759aoq9g.jpg'},
+{nome: 'Placa de vidro de 20 mm de espessura (1)', preco: 28.16, imagem: 'https://cdn.dentalspeed.com/produtos/550/placa-de-vidro-polida-15mm-prisma-dentalspeed-24088a-1.jpg '},
+{nome: 'Espátula número 24 (1)', preco: 15.87, imagem: ' https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfB-P69Wlud845CQBdmXjakUatRfkk23tfsw&s'},
+{nome: 'Espátula número 36 (1)', preco: 15.87, imagem: 'https://cdn.dentalcremer.com.br/produtos/550/espatula-simples-36-cabo-oitavado-golgran-dc-343915-03.jpg '},
+{nome: 'Aplicador de hidróxido de cálcio duplo (1)', preco: 10.53, imagem: 'https://cdn.dentalcremer.com.br/produtos/550/ilustracao-aplicador-hidroxido-de-calcio-dycal-duplo-angulado-fava-771008.jpg '},
+{nome: 'Seringa CENTRIX e pontas (1)', preco: 200, imagem: 'https://odontomaster.fbitsstatic.net/img/p/precision-applicator-centrix-maquira-70302/257249.jpg?w=420&h=420&v=no-change&qs=ignore '},
+{nome: 'Espátula número 1 para inserção de cimento (1)', preco: 19.7, imagem: ' https://dentalecia.vteximg.com.br/arquivos/ids/175068-1000-1000/Insercao.png?v=638188859935530000'},
+{nome: 'Porta matriz Tofflemire (1)', preco: 24.15, imagem: ' https://cdn.dentalcremer.com.br/produtos/550/399462.jpg'},
+{nome: 'Compasso de ponta seca (1)', preco: 92.47, imagem: ' https://www.suryadental.com.br/media/catalog/product/2/6/268021000_1.jpg?auto=webp&format=pjpg&fit=cover'},
+{nome: 'Fotopolimerizador LED com no mínimo 500 mW/cm2 de intensidade de luz (1)', preco: 675, imagem: ' https://schuster.vtexassets.com/arquivos/ids/156292-440-440?v=638617554993170000&width=440&height=440&aspect=true'},
+{nome: 'Alicate 121 (BICO CHATO) (1)', preco: 91.97, imagem: 'https://cdn.dentalcremer.com.br/produtos/550/alicate-121-bico-chato-golgran-dental-cremer.jpg '},
+{nome: 'Alicate 141 (1)', preco: 113.69, imagem: ' https://cdn.awsli.com.br/2790/2790188/produto/345680250/18862_000_1-fvh5hffdtu.jpg'},
+{nome: 'Tesoura Iris fina reta (1)', preco: 21.51, imagem: ' https://a-static.mlcdn.com.br/800x560/tesoura-iris-fina-fina-reta-115cm-safer/bookmedicamathospelivrostec/tesiris11rt/f6b1f1ac9e479e98b634f3de8651b6ae.jpeg'},
+{nome: 'Tesoura de ponta reta para ouro (1)', preco: 32.1, imagem: ' https://images.tcdn.com.br/img/img_prod/1193970/tesoura_ouro_reta_2321_1_4e7c546d006cdc3654acd688c1aca013.png'},
+{nome: 'Cunha anatômica de madeira sortido (1)', preco: 30.57, imagem: 'https://res-4.cloudinary.com/dwnxbdh4g/image/upload/c_pad,dpr_1.0,f_auto,q_auto/v1/media/catalog/product/e/m/embalagem_cunhas_anatimicas_coloridas.jpg '},
+{nome: 'Cabo de bisturi (1)', preco: 9.87, imagem: ' https://dentalecia.vteximg.com.br/arquivos/ids/175022-1000-1000/Cabo3.png?v=638180270763130000'},
+{nome: 'Lâmina de bisturi número 11, 12 e 15 C (5)', preco: 0.34, imagem: ' https://cdn.vnda.com.br/1000x/espacoquallys/2019/09/20/lambis10u-lamina-de-bisturi-com-10-unidades-10052.jpg?v=1569006542'},
+{nome: 'Pote Dappen de vidro incolor (2)', preco: 6.9, imagem: ' https://images.tcdn.com.br/img/img_prod/1135564/pote_dappen_vidro_7_1_2486b2b91258047c59903615e8caabf0.jpg'},
+{nome: 'Condensador Hollenback número 6 (1)', preco: 15.44, imagem: ' https://images.tcdn.com.br/img/img_prod/1253468/condensador_hollemback_6_duflex_ss_white_17477_1_3645668e3fe2118f66a12fc025f821a1.jpeg'},
+{nome: 'Esculpidor Hollenback número 3S (1)', preco: 15.03, imagem: ' https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS8A5m3Z6DG5Xptva5xGbDMbV3eqX63ou1mZA&s'},
+{nome: 'Taças de borracha para profilaxia para contra-ângulo (cor branca) (3)', preco: 5.85, imagem: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR5iynLbeWpaj9WVIR-c2JIbZaChgocgYJyPw&s '},
+{nome: 'Escovas Robinson tipo mini-taça para contra-ângulo (3)', preco: 24, imagem: ' https://www.suryadental.com.br/media/catalog/product/1/0/101050000.jpg?quality=80&bg-color=255,255,255&fit=bounds&height=&width='},
+{nome: 'Kit dentistica golgran (espatulas e cortantes) (1)', preco: 590, imagem: 'https://dentalshop.vtexassets.com/arquivos/ids/1142647/2166448e6a48bdfd158c2a5ba3a81eb3.jpg?v=638721377425130000 '},
+{nome: 'Aplicadores descartáveis tipo MICRO BRUSH – MINI (extrafine) (1)', preco: 11.85, imagem: 'https://images.tcdn.com.br/img/img_prod/720244/microbrush_para_sobrancelha_caixa_com_100_unid_593_1_20200804121019.jpg '},
+{nome: 'Pinceis PLANOS/CHATOS para trabalhar com Resina Composta (1)', preco: 60, imagem: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTHE48dIQAHePajOMI04Riq64-OpikHsdfkww&s '},
+{nome: 'Brocas multilaminadas de 12 LÂMINAS para acabamento cervical (1)', preco: 22.48, imagem: ' https://www.suryadental.com.br/media/catalog/product/0/4/046142000.jpg?quality=80&bg-color=255,255,255&fit=bounds&height=&width='},
+{nome: 'Brocas multilaminadas de 30 LÂMINAS (1)', preco: 110.72, imagem: ' https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ7BUDORj4L9eJYMz7RN7B8NXiMaaygAGLhjQ&s'},
+{nome: 'Pontas diamantadas da 2ª série (finas) (1)', preco: 51.6, imagem: ' https://dentalecia.vteximg.com.br/arquivos/ids/173019-1000-1000/carretel1047.png?v=637872788386230000'},
+{nome: 'Pontas diamantadas da 3ª série (extrafinas) (1)', preco: 51.6, imagem: ' https://www.suryadental.com.br/media/catalog/product/1/8/187050000_1.jpg'},
+{nome: 'Escova de Carbeto de Silício para Polimento de Resinas (3)', preco: 25, imagem: ' https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTOlWZRY6UJkEZNaX9eVD8_jhWnUVc74RLZw&s'},
+{nome: 'Sistema Matrizes Unimatrix: no kit deverá ter matrizes metálicas individuais para PRÉ-MOLAR e MOLAR, grampo e protetores de silicone triangulares (1)', preco: 325.35, imagem: 'https://dentalecia.vteximg.com.br/arquivos/ids/170708-1000-1000/178838.jpg?v=637618680851770000 '},
+{nome: 'Tira matriz de poliéster transparente (50 unidades de 10 cm de comprimento cada) (1)', preco: 1.99, imagem: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTlZTtmMgkcZE9e71flEtrWp9yKOmnhxHjyDw&s '},
+{nome: 'Fita matriz metálica de 5 mm e 7 mm (1)', preco: 3.38, imagem: ' https://images.tcdn.com.br/img/img_prod/651650/fita_matriz_metalica_5mm_rolo_de_3_metros_1131_1_20200709174930.jpg'},
+{nome: 'Tiras abrasivas de aços de 4 mm e 5 mm – a embalagem vem com 12 unidades de tiras (1)', preco: 15.66, imagem: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTEybSJzVJ8sFr0bZzz3YtLujRDXfs7wmK4kQ&s '},
+{nome: 'Tira de lixa diamantada diamond strip fina 12un - 2,5 mm x110 mm (1)', preco: 67.18, imagem: 'https://dentalproclin.fbitsstatic.net/img/p/tira-de-lixa-diamantada-durastripe-american-burrs-74145/264096.jpg?w=700&h=700&v=no-value '},
+{nome: 'Tira de lixa de poliéster para acabamento proximal de 2,5 mm de largura (1)', preco: 1.99, imagem: ' https://images.tcdn.com.br/img/img_prod/585327/tira_de_lixa_de_poliester_para_acabamento_e_polimento_sof_lex_3m_espe_5169_1_47110479559b9aeb308e967dc7cc7f41_20231026173732.jpg'},
+{nome: 'Sistema de borrachas abrasivas para acabamento e polimento de resina composta de alta performance (1)', preco: 232, imagem: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSyCfHDm_P6KkSXHIc70S0Gsvr3rba4oIwQ7g&s '},
+{nome: 'Cimento de ionômero de vidro Restaurador – R (pó e líquido) (1)', preco: 30, imagem: ' https://www.suryadental.com.br/media/catalog/product/1/5/152021000_1.jpg'},
+{nome: 'Ácido fosfórico a 37% (1)', preco: 36.9, imagem: ' https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSdZ4ErsslpRCWMkvUz31NubOfBDforLeiA0w&s'},
+{nome: 'Sistema adesivo convencional de 2 passos para esmalte e dentina: primer e adesivo num frasco único (1)', preco: 45.89, imagem: 'https://cdn.dentalcremer.com.br/produtos/550/adesivo-adper-single-bond-2-3m-dental-cremer.jpg'},
+{nome: 'Resina composta (A3,5 – DENTINA e A3,5 - ESMALTE) (1)', preco: 22.55, imagem: 'https://blog.suryadental.com.br/wp-content/uploads/2020/03/resina-composta-3m-1.jpg '},
+{nome: 'Gaze (1)', preco: 22.39, imagem: 'https://drogariasp.vteximg.com.br/arquivos/ids/1117820-1000-1000/_0000_219835.png?v=638536378503930000 '},
+{nome: 'Pedra-pomes (1)', preco: 10.9, imagem: ' https://www.suryadental.com.br/media/catalog/product/1/9/195011000_1.jpg?auto=webp&format=pjpg&fit=cover'},
+{nome: 'Restaurador resinoso temporário (1)', preco: 44.9, imagem: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSs_L6VAS11_dQDi85SbHCBXpvX4vouB5tXoA&s '},
+{nome: 'Silicone de condensação: material denso/pesado e o catalizador (1)', preco: 189, imagem: 'https://cdn.dentalspeed.com/produtos/550/kit-silicone-de-condensacao-perfil-vigodent-ds-vpm5270b-4.jpg '},
+{nome: 'Seringa carpule (1)', preco: 62.61, imagem: ' https://interdental.vtexassets.com/arquivos/ids/193252/71370112-1-Seringa-Carpule-com-Refluxo-Pink-Cooperflex.jpg?v=638205749344000000'},
+{nome: 'Pinca Hemostatica (1)', preco: 31.19, imagem: ' https://telediu.com.br/imagens/29/produtos/1224/TELEDIU-GOLGRAN-PINCAHEMOSTATICAKELLYCURVA18CMGOLGRAN.jpg'},
+{nome: 'Afastador Minessota (1)', preco: 12.04, imagem: ' https://produtos.smartbr.com/000000000004544/1280/afastador-minessota-golgran-3.jpg'},
+{nome: 'Abaixador de lingua (1)', preco: 23.96, imagem: ' https://images.tcdn.com.br/img/img_prod/780820/abaixador_de_lingua_bruenings_19_cm_5652592_1_20200528184525.jpg'},
+{nome: 'Bandeja Inox (1)', preco: 34.77, imagem: ' https://cdn.awsli.com.br/2500x2500/948/948882/produto/35841025/eed1d6e480.jpg'},
+{nome: 'Clorexidina (1)', preco: 33.15, imagem: ' https://cdn.awsli.com.br/2500x2500/2593/2593485/produto/246748046/design-sem-nome--26--hapgofe806.png'},
+{nome: 'Anestesico Topico Benzotop (1)', preco: 22, imagem: ' https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyBj-DMAbNmplFCbq80yo9XQipjiu7TgN-aQ&s'},
+{nome: 'Agulha Gengival curta 30g (1)', preco: 35.9, imagem: ' https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSPJhdkG6Zaof6fQVmWqzrns6ovPMd0lJS1Sg&s'},
+{nome: 'Agulha Gengival Dencojet longa (1)', preco: 53.11, imagem: ' https://images.tcdn.com.br/img/img_prod/585327/agulha_gengival_27g_longa_injex_2847_1_755a79b2abd3d7a0a1526c3506a875da.jpg'},
+{nome: 'Sugador Cirúrgico Descartável (10)', preco: 2.5, imagem: ' https://www.suryadental.com.br/media/catalog/product/2/5/256007000_1.jpg?auto=webp&format=pjpg&fit=cover'},
+{nome: 'Clips Colgadura Unitário (2)', preco: 6.12, imagem: ' https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRKNdW2pwlKlGaORJhqd0hjhYx5ZkbB1KXyMA&s'},
+{nome: 'Clips Colgadura 7-Pares (1)', preco: 76.9, imagem: 'https://storage.googleapis.com/catalogo-mais-odonto.appspot.com/photos/resize/colgadura-em-pares-5-pares-tecnodent-1654869970010-0_400x400.png '}
+    ];
+
+    const lista = document.getElementById('lista-produtos');
+    const totalDisplay = document.getElementById('total');
+
+    function criarProduto(produto) {
+      const div = document.createElement('div');
+      div.className = 'produto';
+      div.innerHTML = `
+        <img src="${produto.imagem}" alt="${produto.nome}">
+        <div class="produto-info">
+          <div>${produto.nome}</div>
+          <div class="preco">R$ ${produto.preco.toFixed(2).replace('.', ',')}</div>
+        </div>
+        <div class="quantidade-container">
+          <input type="number" class="quantidade" data-preco="${produto.preco}" min="0" step="1" value="0">
+        </div>
+      `;
+      return div;
+    }
+
+    function atualizarTotal() {
+      const inputs = document.querySelectorAll('.quantidade');
+      let total = 0;
+      inputs.forEach(input => {
+        const quantidade = parseInt(input.value) || 0;
+        const preco = parseFloat(input.getAttribute('data-preco'));
+        total += quantidade * preco;
+      });
+      totalDisplay.textContent = 'Total: R$ ' + total.toFixed(2).replace('.', ',');
+    }
+
+    produtos.forEach(produto => {
+      const item = criarProduto(produto);
+      lista.appendChild(item);
+    });
+
+    document.querySelectorAll('.quantidade').forEach(input => {
+      input.addEventListener('input', atualizarTotal);
+    });
+
+    const botaoPix = document.getElementById('pagarBtn');
+    const pixInfo = document.getElementById('pix-info');
+    const valorPix = document.getElementById('valorPix');
+
+    botaoPix.addEventListener('click', () => {
+      valorPix.textContent = totalDisplay.textContent;
+      pixInfo.style.display = 'block';
+    });
+
+    const fecharBtn = document.getElementById('fecharBtn');
+    fecharBtn.addEventListener('click', () => {
+      pixInfo.style.display = 'none';
+    });
+  </script>
+
+</body>
+</html>
+
